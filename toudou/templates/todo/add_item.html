@@ -1,0 +1,50 @@
+{% if current_theme == 'light' %}
+{% extends 'base.html' %}
+{% else %}
+{% extends 'darkbase' %}
+{% endif %}
+
+{% block basecss %}
+{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/add_item.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">{{ current_theme }}</label>
+    </div>
+</form>
+<main class="form-add-item">
+    <form method="POST" enctype="multipart/form-data">
+        <img class="mb-4" src="" alt="logo" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">Add event to to do list.</h1>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingTodo" placeholder="Describe event." name="todo">
+            <label for="floatingTodo">Todo</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Add Item</button>
+        <p class="mt-5 mb-3 text-muted">&copy; {{ year }}</p>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    </form>
+</main>
+{% endblock %}
+
+<!-- Script for this template -->
+{% block basejs %}
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+{% endblock %}
+
+<!-- Custom script for templates extending this template -->
+{% block js %}
+{% endblock %}
+
+
+</body>
+
+</html>
