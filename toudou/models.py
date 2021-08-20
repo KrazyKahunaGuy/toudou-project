@@ -1,6 +1,7 @@
-from enum import unique
+from datetime import date, datetime
 from toudou import db, login_manager, bcrypt
 from flask_login import UserMixin
+import signal
 
 
 class User(UserMixin, db.Model):
@@ -36,4 +37,26 @@ class Todo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     todo = db.Column(db.String(256), nullable=False)
+    type = db.Column(db.String(7), nullable=False, default='Untimed')
+    expires = db.Column(db.DateTime, nullable=True)
+    complete = db.Column(db.Boolean)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    modified = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def set_type(self, type):
+        if type in ['Timed', 'Untimed']:
+            self.type = type
+        else:
+            return self.set_type(type)
+    
+    def on_complete(self):
+        if self.expires > datetime.utcnow():
+            self.complete = True
+        else:
+            self.complete = False
+
+    def set_time(self, date_time):
+        if date_time < datetime.utcnow():
+            return self.set_time(date_time)
+        self.expires = date_time
